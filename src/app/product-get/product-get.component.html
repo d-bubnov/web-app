@@ -1,14 +1,13 @@
 
-<table class="table table-hover">
-    <thead>
-    <tr>
-        <td>Product Name</td>
-        <td>Product Description</td>
-        <td>Product Price</td>
-        <td colspan="2">Actions</td>
-    </tr>
+<table class="table table-hover table-striped table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Product Name</th>
+            <th scope="col">Product Description</th>
+            <th scope="col">Product Price</th>
+            <th scope="col" colspan="2">Actions</th>
+        </tr>
     </thead>
-  
     <tbody>
         <tr *ngFor="let product of products">
             <td>{{ product.ProductName }}</td>
