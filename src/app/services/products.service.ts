@@ -29,6 +29,27 @@ export class ProductsService {
       });
   }
 
+  editProduct(id: string) {
+    const product = this.httpClient
+      .get(`${this.uri}/edit/${id}`);
+
+    return product;
+  }
+
+  updateProduct(ProductName: string, ProductDescription: string, ProductPrice: number, id: string) {
+    const product: Product = {
+      ProductName,
+      ProductPrice,
+      ProductDescription,
+    };
+
+    this.httpClient
+      .post(`${this.uri}/update/${id}`, product)
+      .subscribe(result => {
+        this.logService.write(`Product with id='${id}' was updated...`);
+      });
+  }
+
   getProducts() {
     this.logService.write('Trying to get the products...');
 

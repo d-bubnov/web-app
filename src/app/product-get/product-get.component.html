@@ -13,7 +13,7 @@
             <td>{{ product.ProductName }}</td>
             <td>{{ product.ProductDescription }}</td>
             <td>{{ product.ProductPrice }}</td>
-            <td><a [routerLink]="['/edit', product._id]" class="btn btn-primary">Edit</a></td>
+            <td><a [routerLink]="['/product/edit', product._id]" class="btn btn-primary">Edit</a></td>
             <td><a [routerLink]="" class="btn btn-danger">Delete</a></td>
         </tr>
     </tbody>
