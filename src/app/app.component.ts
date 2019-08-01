@@ -15,7 +15,6 @@ import {
   styleUrls: ['./app.component.less']
 })
 export class AppComponent {
-  title = 'It is simple Angular application';
 
   constructor(
     private loadingBar: SlimLoadingBarService,
