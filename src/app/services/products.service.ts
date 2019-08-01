@@ -22,11 +22,8 @@ export class ProductsService {
 
     this.logService.write(product, 'Trying to add next product: ');
 
-    this.httpClient
-      .post(`${this.uri}/add`, product)
-      .subscribe(result => {
-        this.logService.write(result, 'Result: ');
-      });
+    return this.httpClient
+      .post(`${this.uri}/add`, product);
   }
 
   editProduct(id: string) {
@@ -43,11 +40,15 @@ export class ProductsService {
       ProductDescription,
     };
 
-    this.httpClient
-      .post(`${this.uri}/update/${id}`, product)
-      .subscribe(result => {
-        this.logService.write(`Product with id='${id}' was updated...`);
-      });
+    return this.httpClient
+      .post(`${this.uri}/update/${id}`, product);
+  }
+
+  deleteProduct(id: string) {
+    this.logService.write(`Trying to delete the product by id='${id}'`);
+
+    return this.httpClient
+      .get(`${this.uri}/delete/${id}`);
   }
 
   getProducts() {
