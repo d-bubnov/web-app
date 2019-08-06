@@ -1,4 +1,6 @@
 
+<h3>Selected product ID: {{selected$ | async}}</h3>
+
 <table class="table table-hover table-striped table-bordered">
     <thead class="thead-dark">
         <tr>
@@ -9,7 +11,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let product of products">
+        <tr *ngFor="let product of products" (click)="selectRow(product._id)">
             <td>{{ product.ProductName }}</td>
             <td>{{ product.ProductDescription }}</td>
             <td>{{ product.ProductPrice }}</td>
