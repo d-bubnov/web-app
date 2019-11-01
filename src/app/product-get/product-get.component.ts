@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { Observable, from } from 'rxjs';
 
 import { ProductsService } from '../services/products.service';
 import { LogService } from '../services/log.service';
-import { Product } from '../models/Product';
+import { Product } from '../models/product';
 
-import * as productsReducer from '../store/reducers';
-import * as productsActions from '../store/actions';
-import { Observable } from 'rxjs';
+import { IAppState } from '../store/state/app.state';
+import { SelectProductAction } from '../store/actions/products.actions';
+import { selectProduct } from '../store/selectors/product.selectors';
 
 @Component({
   selector: 'app-product-get',
@@ -19,8 +20,8 @@ export class ProductGetComponent implements OnInit {
   products: Product[];
   selected$: Observable<string>;
 
-  constructor(private productsService: ProductsService, private logService: LogService, private store: Store<productsReducer.State>) {
-     this.selected$ = store.select(productsReducer.getSelectedProduct);
+  constructor(private productsService: ProductsService, private logService: LogService, private store: Store<IAppState>) {
+     this.selected$ = store.select(selectProduct);
      this.logService.write(this.selected$);
    }
 
@@ -34,7 +35,7 @@ export class ProductGetComponent implements OnInit {
   }
 
   selectRow(id: string) {
-    this.store.dispatch(new productsActions.SelectProductAction(id));
+    this.store.dispatch(new SelectProductAction(id));
   }
 
   ngOnInit() {

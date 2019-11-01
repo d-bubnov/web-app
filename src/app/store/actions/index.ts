@@ -1,1 +1,0 @@
-export { SelectProductAction } from './products';
