@@ -7,5 +7,5 @@ import { productReducer } from './products.reducers';
 
 export const appReducer: ActionReducerMap<IAppState, any> = {
   router: routerReducer,
-  product: productReducer,
+  products: productReducer,
 };

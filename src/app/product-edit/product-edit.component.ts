@@ -15,42 +15,44 @@ export class ProductEditComponent implements OnInit {
   angForm: FormGroup;
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private formBuilder: FormBuilder,
-    private productsService: ProductsService,
-    private logService: LogService,
+    private _router: Router,
+    private _route: ActivatedRoute,
+    private _formBuilder: FormBuilder,
+    private _productsService: ProductsService,
+    private _logService: LogService,
   ) {
     this.createForm();
   }
 
   createForm() {
-    this.angForm = this.formBuilder.group({
-      ProductName: ['', Validators.required],
-      ProductDescription: ['', Validators.required],
-      ProductPrice: ['', Validators.required],
+    this.angForm = this._formBuilder.group({
+      Name: ['', Validators.required],
+      Description: ['', Validators.required],
+      Price: ['', Validators.required],
     });
   }
 
-  updateProduct(ProductName: string, ProductDescription: string, ProductPrice: number) {
-    this.route.params.subscribe(params => {
-      this.productsService
-        .updateProduct(ProductName, ProductDescription, ProductPrice, params.id)
+  updateProduct(name: string, description: string, price: number) {
+    this._route.params.subscribe(params => {
+      this._productsService
+        .updateProduct(params.id, name, description, price)
         .subscribe(result => {
-          this.logService.write(result, `Updated: `);
-          this.router.navigate(['products']);
+          this._logService.write(result, `Updated: `);
+          this._router.navigate(['products']);
         });
     });
   }
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
-      this.productsService.editProduct(params.id).subscribe(productObject => {
-        const { ProductName, ProductPrice, ProductDescription } = productObject as Product;
-        this.angForm.get('ProductName').setValue(ProductName);
-        this.angForm.get('ProductPrice').setValue(ProductPrice);
-        this.angForm.get('ProductDescription').setValue(ProductDescription);
-      });
+    this._route.params.subscribe(params => {
+      this._productsService
+        .editProduct(params.id)
+        .subscribe((product: Product) => {
+          const { name, price, description } = product;
+          this.angForm.get('Name').setValue(name);
+          this.angForm.get('Price').setValue(price);
+          this.angForm.get('Description').setValue(description);
+        });
     });
   }
 

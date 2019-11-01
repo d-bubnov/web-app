@@ -5,9 +5,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { SlimLoadingBarModule } from 'ng2-slim-loading-bar';
 import { StoreModule } from '@ngrx/store';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
+import { EffectsModule } from '@ngrx/effects';
 
 import { ProductsService } from './services/products.service';
 import { LogService } from './services/log.service';
+
+import { ProductsEffects } from './store/effects/product.effects';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,7 +19,6 @@ import { ProductGetComponent } from './product-get/product-get.component';
 import { ProductEditComponent } from './product-edit/product-edit.component';
 
 import { appReducer } from './store/reducers/app.reducers';
-import { from } from 'rxjs';
 
 @NgModule({
   declarations: [
@@ -33,6 +35,7 @@ import { from } from 'rxjs';
     HttpClientModule,
     StoreModule.forRoot(appReducer),
     StoreRouterConnectingModule.forRoot({ stateKey: 'router' }),
+    EffectsModule.forRoot([ProductsEffects]),
   ],
   providers: [
     ProductsService,

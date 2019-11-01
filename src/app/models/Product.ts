@@ -1,16 +1,25 @@
-
-interface IProduct {
-  ProductName: string;
-  ProductDescription: string;
-  ProductPrice: number;
+export interface IProduct {
+  id?: string;
+  name: string;
+  description: string;
+  price: number;
 }
 
-class Product implements IProduct {
-  // tslint:disable-next-line:variable-name
-  _id?: string;
-  ProductName: string;
-  ProductDescription: string;
-  ProductPrice: number;
-}
+export class Product implements IProduct {
+  public name: string;
+  public description: string;
+  public price: number;
+  public id?: string;
 
-export { Product, IProduct };
+  public constructor(
+    id: string,
+    name: string,
+    description: string,
+    price: number
+  ) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.price = price;
+  }
+}

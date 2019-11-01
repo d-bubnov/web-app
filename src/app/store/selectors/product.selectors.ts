@@ -3,9 +3,14 @@ import { createSelector } from '@ngrx/store';
 import { IAppState } from '../state/app.state';
 import { IProductState } from '../state/product.state';
 
-const selectProducts = (state: IAppState) => state.product;
+const productsFromStore = (state: IAppState) => state.products;
 
 export const selectProduct = createSelector(
-  selectProducts,
-  (state: IProductState) => state.selected
+  productsFromStore,
+  (state: IProductState) => state.selectedProduct,
+);
+
+export const selectProducts = createSelector(
+  productsFromStore,
+  (state: IProductState) => state.products,
 );

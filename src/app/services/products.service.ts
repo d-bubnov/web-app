@@ -2,7 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Product } from '../models/product';
+import { IProductHttp, IProductHttpBase } from '../models/http-models/http.product';
 import { LogService } from './log.service';
+import { switchMap } from 'rxjs/operators';
+import { of, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,42 +16,65 @@ export class ProductsService {
 
   constructor(private httpClient: HttpClient, private logService: LogService) { }
 
-  addProduct(ProductName: string, ProductDescription: string, ProductPrice: number) {
-    const product: Product = {
-      ProductName,
-      ProductPrice,
-      ProductDescription,
+  private convert(product: IProductHttp): Product {
+    return new Product(
+      product._id,
+      product.ProductName,
+      product.ProductDescription,
+      product.ProductPrice
+    );
+  }
+
+  addProduct(name: string, description: string, price: number) {
+    const productToAdd: IProductHttpBase = {
+      ProductName: name,
+      ProductPrice: price,
+      ProductDescription: description,
     };
 
-    this.logService.write(product, 'Trying to add next product: ');
+    this.logService.write(productToAdd, 'Trying to add next product: ');
 
     return this.httpClient
-      .post(`${this.uri}/add`, product);
+      .post(`${this.uri}/add`, productToAdd);
   }
 
-  editProduct(id: string) {
-    const product = this.httpClient
-      .get(`${this.uri}/edit/${id}`);
-
-    return product;
+  /**
+   * Edit product (good method)
+   * @param id product ID
+   */
+  editProduct(id: string): Observable<Product> {
+    return this.httpClient
+      .get<IProductHttp>(`${this.uri}/edit/${id}`)
+      .pipe(
+        switchMap((httpProduct: IProductHttp) => of(this.convert(httpProduct)))
+      );
   }
 
-  updateProduct(ProductName: string, ProductDescription: string, ProductPrice: number, id: string) {
-    const product: Product = {
-      ProductName,
-      ProductPrice,
-      ProductDescription,
+  updateProduct(id: string, name: string, description: string, price: number) {
+    const productToUpdate: IProductHttpBase = {
+      _id: id,
+      ProductName: name,
+      ProductPrice: price,
+      ProductDescription: description,
     };
 
     return this.httpClient
-      .post(`${this.uri}/update/${id}`, product);
+      .post(`${this.uri}/update/${id}`, productToUpdate);
   }
 
+  /**
+   * Delete product by id (good method)
+   * @param id product ID
+   */
   deleteProduct(id: string) {
     this.logService.write(`Trying to delete the product by id='${id}'`);
 
-    return this.httpClient
-      .get(`${this.uri}/delete/${id}`);
+    return this
+      .httpClient
+      .get(`${this.uri}/delete/${id}`)
+      .subscribe(result => {
+        this.logService.write(id, 'Product was deleted successfully: ');
+      });
   }
 
   getProducts() {

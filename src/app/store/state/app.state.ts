@@ -4,11 +4,11 @@ import { IProductState, initialProductState } from './product.state';
 
 export interface IAppState {
   router?: RouterReducerState;
-  product: IProductState;
+  products: IProductState;
 }
 
 export const initialAppState: IAppState = {
-  product: initialProductState,
+  products: initialProductState,
 };
 
 export function getInitialState(): IAppState {

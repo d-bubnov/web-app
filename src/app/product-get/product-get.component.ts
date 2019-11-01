@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { Observable, from } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
 
-import { ProductsService } from '../services/products.service';
-import { LogService } from '../services/log.service';
-import { Product } from '../models/product';
+import {
+  SelectProductAction,
+  GetProductsAction,
+  DeleteProductAction,
+} from '../store/actions/products.actions';
 
+import { selectProduct, selectProducts } from '../store/selectors/product.selectors';
 import { IAppState } from '../store/state/app.state';
-import { SelectProductAction } from '../store/actions/products.actions';
-import { selectProduct } from '../store/selectors/product.selectors';
+import { IProduct } from '../models/product';
 
 @Component({
   selector: 'app-product-get',
@@ -17,33 +19,21 @@ import { selectProduct } from '../store/selectors/product.selectors';
 })
 export class ProductGetComponent implements OnInit {
 
-  products: Product[];
-  selected$: Observable<string>;
+  products$: Observable<IProduct[]> = this._store.pipe(select(selectProducts));
+  selected$: Observable<string> = this._store.pipe(select(selectProduct));
 
-  constructor(private productsService: ProductsService, private logService: LogService, private store: Store<IAppState>) {
-     this.selected$ = store.select(selectProduct);
-     this.logService.write(this.selected$);
-   }
+  constructor(private _store: Store<IAppState>) {}
 
   deleteProduct(id: string) {
-    this.productsService
-      .deleteProduct(id)
-      .subscribe(result => {
-        const index = this.products.findIndex((product) => (product._id === id));
-        this.products.splice(index);
-      });
+    this._store.dispatch(new DeleteProductAction(id));
   }
 
   selectRow(id: string) {
-    this.store.dispatch(new SelectProductAction(id));
+    this._store.dispatch(new SelectProductAction(id));
   }
 
   ngOnInit() {
-    this.productsService
-    .getProducts()
-    .subscribe((data: Product[]) => {
-        this.products = data;
-    });
+    this._store.dispatch(new GetProductsAction());
   }
 
 }

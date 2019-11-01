@@ -292,6 +292,11 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
+"@ngrx/effects@^8.4.0":
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/@ngrx/effects/-/effects-8.4.0.tgz#1904795c344e24682983cd3e65a636c43f8aba60"
+  integrity sha512-LQv+NIYkFehXMSBMT9xL04RvmDmbzSbCbSCXbNSH2hN216TqX83L29u5T4I06oGhzQ3xN+SSQXGWQiZYJvKuEA==
+
 "@ngrx/router-store@^8.4.0":
   version "8.4.0"
   resolved "https://registry.yarnpkg.com/@ngrx/router-store/-/router-store-8.4.0.tgz#59e5295eadaabfdabe11e201de3c0405434783bc"
