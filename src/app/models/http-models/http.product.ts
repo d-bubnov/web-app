@@ -1,10 +1,11 @@
 export interface IProductHttpBase {
   _id?: string;
   ProductName: string;
-  ProductPrice: number;
   ProductDescription: string;
+  ProductPrice: number;
 }
 
 export interface IProductHttp extends IProductHttpBase {
-
+  _id: string;
+  __v: string;
 }
