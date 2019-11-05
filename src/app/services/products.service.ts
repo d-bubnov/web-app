@@ -39,7 +39,7 @@ export class ProductsService {
   }
 
   /**
-   * Edit product (good method)
+   * Edit product
    * @param id product ID
    */
   editProduct(id: string): Observable<Product> {
@@ -63,26 +63,44 @@ export class ProductsService {
   }
 
   /**
-   * Delete product by id (good method)
+   * Delete product by id
    * @param id product ID
    */
-  deleteProduct(id: string) {
+  deleteProduct(id: string): Observable<string> {
     this.logService.write(`Trying to delete the product by id='${id}'`);
 
     return this
       .httpClient
       .get<string>(`${this.uri}/delete/${id}`)
       .pipe(
-        tap(result => this.logService.write(result)),
-        catchError(error => throwError(error))
-      );
+        tap(result => {
+          this.logService.write(result);
+        }),
+        catchError(error => {
+          this.logService.write(error);
+          return throwError(error);
+        })
+    );
   }
 
-  getProducts() {
-    this.logService.write('Trying to get the products...');
+  /**
+   * Get all products
+   */
+  getProducts(): Observable<Product[]> {
+    this.logService.write('Trying to get all products...');
 
     return this
       .httpClient
-      .get(`${this.uri}`);
+      .get<IProductHttp[]>(`${this.uri}`)
+      .pipe(
+        switchMap((httpProducts: IProductHttp[]) => {
+          const products: Product[] = httpProducts.map(product => this.convert(product));
+          return of(products);
+        }),
+        catchError(error => {
+          this.logService.write(error);
+          return throwError(error);
+        })
+      );
   }
 }

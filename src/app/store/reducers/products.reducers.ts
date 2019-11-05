@@ -19,6 +19,7 @@ export function productReducer(
       return {
         ...state,
         products,
+        selectedProduct: '',
       };
     }
     case EProductActions.SelectProduct: {
@@ -28,6 +29,7 @@ export function productReducer(
         selectedProduct: id,
       };
     }
+    case EProductActions.DeleteProductFail:
     default: {
       return state;
     }

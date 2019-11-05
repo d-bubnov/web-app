@@ -7,6 +7,7 @@ export enum EProductActions {
   SelectProduct = '[Product] Select Product',
   DeleteProduct = '[Product] Delete Product',
   DeleteProductSuccess = '[Product] Delete Product Success',
+  DeleteProductFail = '[Product] Delete Product Fail',
 }
 
 export class GetProductsAction implements Action {
@@ -33,4 +34,14 @@ export class DeleteProductSuccess implements Action {
   constructor(public payload: string) {}
 }
 
-export type ProductActions = SelectProductAction | GetProductsAction | DeleteProductAction | GetProductsSuccess | DeleteProductSuccess;
+export class DeleteProductFail implements Action {
+  readonly type = EProductActions.DeleteProductFail;
+}
+
+export type ProductActions =
+  SelectProductAction |
+  GetProductsAction |
+  DeleteProductAction |
+  GetProductsSuccess |
+  DeleteProductSuccess |
+  DeleteProductFail;
