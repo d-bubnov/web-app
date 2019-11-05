@@ -4,8 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { Product } from '../models/product';
 import { IProductHttp, IProductHttpBase } from '../models/http-models/http.product';
 import { LogService } from './log.service';
-import { switchMap } from 'rxjs/operators';
-import { of, Observable } from 'rxjs';
+import { switchMap, tap, catchError } from 'rxjs/operators';
+import { of, Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -71,10 +71,11 @@ export class ProductsService {
 
     return this
       .httpClient
-      .get(`${this.uri}/delete/${id}`)
-      .subscribe(result => {
-        this.logService.write(id, 'Product was deleted successfully: ');
-      });
+      .get<string>(`${this.uri}/delete/${id}`)
+      .pipe(
+        tap(result => this.logService.write(result)),
+        catchError(error => throwError(error))
+      );
   }
 
   getProducts() {

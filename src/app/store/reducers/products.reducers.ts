@@ -13,6 +13,14 @@ export function productReducer(
         products,
       };
     }
+    case EProductActions.DeleteProductSuccess: {
+      const id = action.payload;
+      const products = state.products.filter(product => product.id !== id);
+      return {
+        ...state,
+        products,
+      };
+    }
     case EProductActions.SelectProduct: {
       const id: string = action.payload;
       return {
