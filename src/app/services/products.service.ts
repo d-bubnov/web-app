@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 import { Product } from '../models/product';
 import { IProductHttp, IProductHttpBase } from '../models/http-models/http.product';
 import { LogService } from './log.service';
-import { switchMap, tap, catchError } from 'rxjs/operators';
+import { switchMap, tap, catchError, map } from 'rxjs/operators';
 import { of, Observable, throwError } from 'rxjs';
+import { ResponseMessage } from '../models/http-models/response.message';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +16,11 @@ export class ProductsService {
 
   uri = 'http://localhost:4000/products';
 
-  constructor(private httpClient: HttpClient, private logService: LogService) { }
+  constructor(
+    private httpClient: HttpClient,
+    private logService: LogService,
+    private router: Router
+  ) { }
 
   private convert(product: IProductHttp): Product {
     return new Product(
@@ -39,17 +45,56 @@ export class ProductsService {
   }
 
   /**
+   * Cretae new product
+   * @param product Product entity to add
+   */
+  createProduct(product: Product) {
+    this.logService.info('Trying to add new product');
+
+    const productToAdd: IProductHttpBase = {
+      ProductName: product.name,
+      ProductPrice: product.price,
+      ProductDescription: product.description,
+    };
+
+    return this.httpClient
+      .post<ResponseMessage<string>>(`${this.uri}/add`, productToAdd)
+      .pipe(
+        map(response => [response.Data, response.Message]),
+        tap(([id, message]) => {
+          this.logService.log('Response: ', message);
+          // TODO: question to Ilya
+          this.router.navigate(['products']);
+        }),
+        catchError(error => {
+          this.logService.error(error);
+          return throwError(error);
+        })
+      );
+  }
+
+  /**
    * Edit product
    * @param id product ID
    */
   editProduct(id: string): Observable<Product> {
     return this.httpClient
-      .get<IProductHttp>(`${this.uri}/edit/${id}`)
+      .get<ResponseMessage<IProductHttp>>(`${this.uri}/edit/${id}`)
       .pipe(
-        switchMap((httpProduct: IProductHttp) => of(this.convert(httpProduct)))
+        map(response => response.Data),
+        switchMap((httpProduct: IProductHttp) => {
+          return of(this.convert(httpProduct));
+        })
       );
   }
 
+  /**
+   * Update exists product
+   * @param id product ID
+   * @param name product Name
+   * @param description product Description
+   * @param price product Price
+   */
   updateProduct(id: string, name: string, description: string, price: number) {
     const productToUpdate: IProductHttpBase = {
       _id: id,
@@ -59,7 +104,13 @@ export class ProductsService {
     };
 
     return this.httpClient
-      .post(`${this.uri}/update/${id}`, productToUpdate);
+      .post<ResponseMessage<string>>(`${this.uri}/update/${id}`, productToUpdate)
+      .pipe(
+        map(response => response.Message),
+        tap(message => {
+          this.logService.log('Response: ', message);
+        })
+      );
   }
 
   /**
@@ -71,10 +122,11 @@ export class ProductsService {
 
     return this
       .httpClient
-      .get<string>(`${this.uri}/delete/${id}`)
+      .get<ResponseMessage<string>>(`${this.uri}/delete/${id}`)
       .pipe(
-        tap(response => {
-          this.logService.log('Response: ', response);
+        map(response => response.Message),
+        tap(message => {
+          this.logService.log('Response: ', message);
         }),
         catchError(error => {
           this.logService.error(error);
@@ -91,8 +143,9 @@ export class ProductsService {
 
     return this
       .httpClient
-      .get<IProductHttp[]>(`${this.uri}`)
+      .get<ResponseMessage<IProductHttp[]>>(`${this.uri}`)
       .pipe(
+        map(response => response.Data),
         switchMap((httpProducts: IProductHttp[]) => {
           const products: Product[] = httpProducts.map(product => this.convert(product));
           return of(products);

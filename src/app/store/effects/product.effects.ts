@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Effect, Actions, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { switchMap, map, catchError } from 'rxjs/operators';
+import { switchMap, map, catchError, withLatestFrom } from 'rxjs/operators';
 
 import {
   EProductActions,
@@ -10,6 +10,9 @@ import {
   DeleteProductAction,
   DeleteProductSuccess,
   DeleteProductFail,
+  CreateProductAction,
+  CreateProductSuccess,
+  CreateProductFail,
 } from '../actions/products.actions';
 
 import { ProductsService } from '../../services/products.service';
@@ -22,6 +25,24 @@ export class ProductsEffects {
     private _productsService: ProductsService,
     private _actions$: Actions,
   ) {}
+
+  @Effect()
+  createProduct$ = this._actions$.pipe(
+    ofType<CreateProductAction>(EProductActions.CreateProduct),
+    map(action => action.payload),
+    switchMap((product: Product) => {
+      return this._productsService
+        .createProduct(product)
+        .pipe(
+          switchMap(([id]) => {
+            // TODO: question to Ilya
+            const newProduct = new Product(id, product.name, product.description, product.price);
+            return of (new CreateProductSuccess(newProduct));
+          }),
+          catchError(() => of (new CreateProductFail())),
+        );
+    })
+  );
 
   @Effect()
   deleteProduct$ = this._actions$.pipe(

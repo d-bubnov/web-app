@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup,  FormBuilder,  Validators } from '@angular/forms';
 import { ProductsService } from '../services/products.service';
 import { Router } from '@angular/router';
-import { LogService } from '../services/log.service';
+import { Product } from '../models/product';
+import { IAppState } from '../store/state/app.state';
+import { Store } from '@ngrx/store';
+import { CreateProductAction } from '../store/actions/products.actions';
 
 @Component({
   selector: 'app-product-add',
@@ -16,8 +19,7 @@ export class ProductAddComponent implements OnInit {
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
-    private productService: ProductsService,
-    private logService: LogService,
+    private store: Store<IAppState>
   ) {
     this.createForm();
   }
@@ -31,12 +33,8 @@ export class ProductAddComponent implements OnInit {
   }
 
   addProduct(ProductName: string, ProductDescription: string, ProductPrice: number) {
-    this.productService
-      .addProduct(ProductName, ProductDescription, ProductPrice)
-      .subscribe(result => {
-        this.logService.log('Result: ', result);
-        this.router.navigate(['products']);
-      });
+    const productToAdd = new Product('', ProductName, ProductDescription, ProductPrice);
+    this.store.dispatch(new CreateProductAction(productToAdd));
   }
 
   ngOnInit() {
