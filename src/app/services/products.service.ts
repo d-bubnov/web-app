@@ -26,13 +26,13 @@ export class ProductsService {
   }
 
   addProduct(name: string, description: string, price: number) {
+    this.logService.info('Trying to add new product');
+
     const productToAdd: IProductHttpBase = {
       ProductName: name,
       ProductPrice: price,
       ProductDescription: description,
     };
-
-    this.logService.write(productToAdd, 'Trying to add next product: ');
 
     return this.httpClient
       .post(`${this.uri}/add`, productToAdd);
@@ -67,17 +67,17 @@ export class ProductsService {
    * @param id product ID
    */
   deleteProduct(id: string): Observable<string> {
-    this.logService.write(`Trying to delete the product by id='${id}'`);
+    this.logService.info(`Trying to delete the product by id='${id}'`);
 
     return this
       .httpClient
       .get<string>(`${this.uri}/delete/${id}`)
       .pipe(
-        tap(result => {
-          this.logService.write(result);
+        tap(response => {
+          this.logService.log('Response: ', response);
         }),
         catchError(error => {
-          this.logService.write(error);
+          this.logService.error(error);
           return throwError(error);
         })
     );
@@ -87,7 +87,7 @@ export class ProductsService {
    * Get all products
    */
   getProducts(): Observable<Product[]> {
-    this.logService.write('Trying to get all products...');
+    this.logService.info('Trying to get all products');
 
     return this
       .httpClient
@@ -98,7 +98,7 @@ export class ProductsService {
           return of(products);
         }),
         catchError(error => {
-          this.logService.write(error);
+          this.logService.error(error);
           return throwError(error);
         })
       );

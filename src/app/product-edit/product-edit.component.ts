@@ -37,7 +37,7 @@ export class ProductEditComponent implements OnInit {
       this._productsService
         .updateProduct(params.id, name, description, price)
         .subscribe(result => {
-          this._logService.write(result, `Updated: `);
+          this._logService.log('Updated: ', result);
           this._router.navigate(['products']);
         });
     });

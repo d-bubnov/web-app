@@ -34,7 +34,7 @@ export class ProductAddComponent implements OnInit {
     this.productService
       .addProduct(ProductName, ProductDescription, ProductPrice)
       .subscribe(result => {
-        this.logService.write(result, 'Result: ');
+        this.logService.log('Result: ', result);
         this.router.navigate(['products']);
       });
   }
