@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   logging: true,
+  apiUrl: 'http://localhost:4000/products',
 };
 
 /*

@@ -8,13 +8,14 @@ import { Product } from '../models/product';
 import { ResponseMessage } from '../models/http-models/response.message';
 import { IProductHttp, IProductHttpBase } from '../models/http-models/http.product';
 import { LogService } from './log.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductsService {
 
-  uri = 'http://localhost:4000/products';
+  uri: string = environment.apiUrl;
 
   constructor(
     private httpClient: HttpClient,
