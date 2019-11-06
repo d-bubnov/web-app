@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
 
-import { Product } from '../models/product';
-import { IProductHttp, IProductHttpBase } from '../models/http-models/http.product';
-import { LogService } from './log.service';
 import { switchMap, tap, catchError, map } from 'rxjs/operators';
 import { of, Observable, throwError } from 'rxjs';
+
+import { Product } from '../models/product';
 import { ResponseMessage } from '../models/http-models/response.message';
+import { IProductHttp, IProductHttpBase } from '../models/http-models/http.product';
+import { LogService } from './log.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +19,6 @@ export class ProductsService {
   constructor(
     private httpClient: HttpClient,
     private logService: LogService,
-    private router: Router
   ) { }
 
   private convert(product: IProductHttp): Product {
@@ -31,24 +30,11 @@ export class ProductsService {
     );
   }
 
-  addProduct(name: string, description: string, price: number) {
-    this.logService.info('Trying to add new product');
-
-    const productToAdd: IProductHttpBase = {
-      ProductName: name,
-      ProductPrice: price,
-      ProductDescription: description,
-    };
-
-    return this.httpClient
-      .post(`${this.uri}/add`, productToAdd);
-  }
-
   /**
    * Cretae new product
    * @param product Product entity to add
    */
-  createProduct(product: Product) {
+  createProduct(product: Product): Observable<boolean> {
     this.logService.info('Trying to add new product');
 
     const productToAdd: IProductHttpBase = {
@@ -60,11 +46,13 @@ export class ProductsService {
     return this.httpClient
       .post<ResponseMessage<string>>(`${this.uri}/add`, productToAdd)
       .pipe(
-        map(response => [response.Data, response.Message]),
-        tap(([id, message]) => {
-          this.logService.log('Response: ', message);
-          // TODO: question to Ilya
-          this.router.navigate(['products']);
+        map(response => ({
+          message: response.Message,
+          success: response.Success,
+        })),
+        switchMap((result) => {
+          this.logService.log('Response: ', result.message);
+          return of(result.success);
         }),
         catchError(error => {
           this.logService.error(error);

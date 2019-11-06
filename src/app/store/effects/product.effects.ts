@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Effect, Actions, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { switchMap, map, catchError, withLatestFrom } from 'rxjs/operators';
+import { switchMap, map, catchError, tap } from 'rxjs/operators';
 
 import {
   EProductActions,
@@ -17,6 +17,7 @@ import {
 
 import { ProductsService } from '../../services/products.service';
 import { Product } from 'src/app/models/product';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class ProductsEffects {
@@ -24,6 +25,7 @@ export class ProductsEffects {
   constructor(
     private _productsService: ProductsService,
     private _actions$: Actions,
+    private _router: Router,
   ) {}
 
   @Effect()
@@ -34,14 +36,33 @@ export class ProductsEffects {
       return this._productsService
         .createProduct(product)
         .pipe(
-          switchMap(([id]) => {
-            // TODO: question to Ilya
-            const newProduct = new Product(id, product.name, product.description, product.price);
-            return of (new CreateProductSuccess(newProduct));
+          switchMap((success) => {
+            if (success) {
+              return of (new CreateProductSuccess());
+            }
+
+            return of (new CreateProductFail());
           }),
           catchError(() => of (new CreateProductFail())),
         );
     })
+  );
+
+  @Effect({ dispatch: false })
+  createProductSuccess$ = this._actions$.pipe(
+    ofType<CreateProductSuccess>(EProductActions.CreateProductSuccess),
+    tap(() => {
+      this._router.navigate(['products']);
+    }),
+  );
+
+  @Effect({ dispatch: false })
+  createProductFail$ = this._actions$.pipe(
+    ofType<CreateProductFail>(EProductActions.CreateProductFail),
+    tap(() => {
+      // TODO: show modal dialog for this case (Effect without `dispatch: false`)
+      alert('Something went wrong while adding new product (see consile logs)');
+    }),
   );
 
   @Effect()

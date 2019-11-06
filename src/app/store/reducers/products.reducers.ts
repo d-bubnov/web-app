@@ -22,15 +22,6 @@ export function productReducer(
         selectedProduct: '',
       };
     }
-    case EProductActions.CreateProductSuccess: {
-      const product = action.payload;
-      const products = [...state.products, product];
-      return {
-        ...state,
-        products,
-        selectedProduct: '',
-      };
-    }
     case EProductActions.SelectProduct: {
       const id: string = action.payload;
       return {
@@ -39,7 +30,6 @@ export function productReducer(
       };
     }
     case EProductActions.DeleteProductFail:
-    case EProductActions.CreateProductFail:
     default: {
       return state;
     }

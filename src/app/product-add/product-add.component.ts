@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup,  FormBuilder,  Validators } from '@angular/forms';
-import { ProductsService } from '../services/products.service';
-import { Router } from '@angular/router';
 import { Product } from '../models/product';
 import { IAppState } from '../store/state/app.state';
 import { Store } from '@ngrx/store';
@@ -17,7 +15,6 @@ export class ProductAddComponent implements OnInit {
   angForm: FormGroup;
 
   constructor(
-    private router: Router,
     private formBuilder: FormBuilder,
     private store: Store<IAppState>
   ) {

@@ -48,7 +48,6 @@ export class CreateProductAction implements Action {
 
 export class CreateProductSuccess implements Action {
   readonly type = EProductActions.CreateProductSuccess;
-  constructor(public payload: Product) {}
 }
 
 export class CreateProductFail implements Action {
