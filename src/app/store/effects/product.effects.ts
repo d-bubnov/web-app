@@ -61,7 +61,7 @@ export class ProductsEffects {
     ofType<CreateProductFail>(EProductActions.CreateProductFail),
     tap(() => {
       // TODO: show modal dialog for this case (Effect without `dispatch: false`)
-      alert('Something went wrong while adding new product (see consile logs)');
+      alert('Something went wrong while adding new product (see console logs)');
     }),
   );
 

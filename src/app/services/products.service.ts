@@ -15,14 +15,14 @@ import { environment } from 'src/environments/environment';
 })
 export class ProductsService {
 
-  uri: string = environment.apiUrl;
+  private uri: string = environment.apiUrl;
 
   constructor(
     private httpClient: HttpClient,
     private logService: LogService,
   ) { }
 
-  private convert(product: IProductHttp): Product {
+  private convertHttpToModel(product: IProductHttp): Product {
     return new Product(
       product._id,
       product.ProductName,
@@ -58,7 +58,7 @@ export class ProductsService {
         catchError(error => {
           this.logService.error(error);
           return throwError(error);
-        })
+        }),
       );
   }
 
@@ -72,8 +72,13 @@ export class ProductsService {
       .pipe(
         map(response => response.Data),
         switchMap((httpProduct: IProductHttp) => {
-          return of(this.convert(httpProduct));
-        })
+          const product = this.convertHttpToModel(httpProduct);
+          return of(product);
+        }),
+        catchError(error => {
+          this.logService.error(error);
+          return throwError(error);
+        }),
       );
   }
 
@@ -84,7 +89,7 @@ export class ProductsService {
    * @param description product Description
    * @param price product Price
    */
-  updateProduct(id: string, name: string, description: string, price: number) {
+  updateProduct(id: string, name: string, description: string, price: number): Observable<boolean> {
     const productToUpdate: IProductHttpBase = {
       _id: id,
       ProductName: name,
@@ -95,10 +100,18 @@ export class ProductsService {
     return this.httpClient
       .post<ResponseMessage<string>>(`${this.uri}/update/${id}`, productToUpdate)
       .pipe(
-        map(response => response.Message),
-        tap(message => {
-          this.logService.log('Response: ', message);
-        })
+        map(response => ({
+          message: response.Message,
+          success: response.Success,
+        })),
+        switchMap((result) => {
+          this.logService.log('Response: ', result.message);
+          return of(result.success);
+        }),
+        catchError(error => {
+          this.logService.error(error);
+          return throwError(error);
+        }),
       );
   }
 
@@ -120,7 +133,7 @@ export class ProductsService {
         catchError(error => {
           this.logService.error(error);
           return throwError(error);
-        })
+        }),
     );
   }
 
@@ -136,13 +149,15 @@ export class ProductsService {
       .pipe(
         map(response => response.Data),
         switchMap((httpProducts: IProductHttp[]) => {
-          const products: Product[] = httpProducts.map(product => this.convert(product));
+          const products: Product[] = httpProducts
+            .map((httpProduct: IProductHttp) => this.convertHttpToModel(httpProduct));
+
           return of(products);
         }),
         catchError(error => {
           this.logService.error(error);
           return throwError(error);
-        })
+        }),
       );
   }
 }
