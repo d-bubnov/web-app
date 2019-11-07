@@ -12,6 +12,7 @@ import { LogService } from './services/log.service';
 
 import { appReducer } from './store/reducers/app.reducers';
 import { ProductsEffects } from './store/effects/product.effects';
+import { ModalEffects } from './store/effects/modal.effects';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
@@ -36,7 +37,7 @@ import { ModalDialogComponent } from './modal-dialog/modal-dialog.component';
     HttpClientModule,
     StoreModule.forRoot(appReducer),
     StoreRouterConnectingModule.forRoot({ stateKey: 'router' }),
-    EffectsModule.forRoot([ProductsEffects]),
+    EffectsModule.forRoot([ProductsEffects, ModalEffects]),
   ],
   providers: [
     ProductsService,

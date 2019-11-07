@@ -13,7 +13,7 @@ export function modalReducer(
   action: ExtendedActionType // I want to use `ModalActions` type here!
 ): IModalState {
   switch (action.type) {
-    case EModalActions.OpenModal: {
+    case EModalActions.OpenModalSuccess: {
       const message: string = action.payload;
       return {
         ...state,
@@ -21,7 +21,7 @@ export function modalReducer(
         showModal: true,
       };
     }
-    case EModalActions.CloseModal: {
+    case EModalActions.CloseModalSuccess: {
       return {
         ...state,
         showModal: false,
