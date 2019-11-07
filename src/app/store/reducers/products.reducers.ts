@@ -2,7 +2,7 @@ import { ProductActions, EProductActions } from '../actions/products.actions';
 import { IProductState, initialProductState } from '../state/product.state';
 
 export function productReducer(
-  state = initialProductState,
+  state: IProductState = initialProductState,
   action: ProductActions
 ): IProductState {
   switch (action.type) {

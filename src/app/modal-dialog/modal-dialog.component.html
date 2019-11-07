@@ -1,0 +1,16 @@
+<div *ngIf="(showModal$ | async)">
+  <div class="custom-modal">
+    <div class="custom-modal-body">
+      <h2>Information</h2>
+      <h4>{{ message$ | async }}</h4>
+      <button
+        type="button"
+        class="btn btn-danger"
+        (click)="closeModal()"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+  <div class="custom-modal-background"></div>      
+</div>

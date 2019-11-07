@@ -10,15 +10,15 @@ import { EffectsModule } from '@ngrx/effects';
 import { ProductsService } from './services/products.service';
 import { LogService } from './services/log.service';
 
+import { appReducer } from './store/reducers/app.reducers';
 import { ProductsEffects } from './store/effects/product.effects';
-
 import { AppRoutingModule } from './app-routing.module';
+
 import { AppComponent } from './app.component';
 import { ProductAddComponent } from './product-add/product-add.component';
 import { ProductGetComponent } from './product-get/product-get.component';
 import { ProductEditComponent } from './product-edit/product-edit.component';
-
-import { appReducer } from './store/reducers/app.reducers';
+import { ModalDialogComponent } from './modal-dialog/modal-dialog.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +26,7 @@ import { appReducer } from './store/reducers/app.reducers';
     ProductAddComponent,
     ProductGetComponent,
     ProductEditComponent,
+    ModalDialogComponent,
   ],
   imports: [
     BrowserModule,

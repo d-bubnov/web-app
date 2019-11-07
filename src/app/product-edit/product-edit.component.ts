@@ -15,17 +15,17 @@ export class ProductEditComponent implements OnInit {
   angForm: FormGroup;
 
   constructor(
-    private _router: Router,
-    private _route: ActivatedRoute,
-    private _formBuilder: FormBuilder,
-    private _productsService: ProductsService,
-    private _logService: LogService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private formBuilder: FormBuilder,
+    private productsService: ProductsService,
+    private logService: LogService,
   ) {
     this.createForm();
   }
 
   createForm() {
-    this.angForm = this._formBuilder.group({
+    this.angForm = this.formBuilder.group({
       Name: ['', Validators.required],
       Description: ['', Validators.required],
       Price: ['', Validators.required],
@@ -33,19 +33,19 @@ export class ProductEditComponent implements OnInit {
   }
 
   updateProduct(name: string, description: string, price: number) {
-    this._route.params.subscribe(params => {
-      this._productsService
+    this.route.params.subscribe(params => {
+      this.productsService
         .updateProduct(params.id, name, description, price)
         .subscribe(result => {
-          this._logService.log('Updated: ', result);
-          this._router.navigate(['products']);
+          this.logService.log('Updated: ', result);
+          this.router.navigate(['products']);
         });
     });
   }
 
   ngOnInit() {
-    this._route.params.subscribe(params => {
-      this._productsService
+    this.route.params.subscribe(params => {
+      this.productsService
         .editProduct(params.id)
         .subscribe((product: Product) => {
           const { name, price, description } = product;

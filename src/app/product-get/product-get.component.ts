@@ -19,21 +19,21 @@ import { IProduct } from '../models/product';
 })
 export class ProductGetComponent implements OnInit {
 
-  products$: Observable<IProduct[]> = this._store.pipe(select(selectProducts));
-  selected$: Observable<string> = this._store.pipe(select(selectProduct));
+  products$: Observable<IProduct[]> = this.store.pipe(select(selectProducts));
+  selected$: Observable<string> = this.store.pipe(select(selectProduct));
 
-  constructor(private _store: Store<IAppState>) {}
+  constructor(private store: Store<IAppState>) {}
 
   deleteProduct(id: string) {
-    this._store.dispatch(new DeleteProductAction(id));
+    this.store.dispatch(new DeleteProductAction(id));
   }
 
   selectRow(id: string) {
-    this._store.dispatch(new SelectProductAction(id));
+    this.store.dispatch(new SelectProductAction(id));
   }
 
   ngOnInit() {
-    this._store.dispatch(new GetProductsAction());
+    this.store.dispatch(new GetProductsAction());
   }
 
 }

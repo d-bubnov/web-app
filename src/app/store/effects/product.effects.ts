@@ -23,17 +23,17 @@ import { Router } from '@angular/router';
 export class ProductsEffects {
 
   constructor(
-    private _productsService: ProductsService,
-    private _actions$: Actions,
-    private _router: Router,
+    private productsService: ProductsService,
+    private actions$: Actions,
+    private router: Router,
   ) {}
 
   @Effect()
-  createProduct$ = this._actions$.pipe(
+  createProduct$ = this.actions$.pipe(
     ofType<CreateProductAction>(EProductActions.CreateProduct),
     map(action => action.payload),
     switchMap((product: Product) => {
-      return this._productsService
+      return this.productsService
         .createProduct(product)
         .pipe(
           switchMap((success) => {
@@ -49,15 +49,15 @@ export class ProductsEffects {
   );
 
   @Effect({ dispatch: false })
-  createProductSuccess$ = this._actions$.pipe(
+  createProductSuccess$ = this.actions$.pipe(
     ofType<CreateProductSuccess>(EProductActions.CreateProductSuccess),
     tap(() => {
-      this._router.navigate(['products']);
+      this.router.navigate(['products']);
     }),
   );
 
   @Effect({ dispatch: false })
-  createProductFail$ = this._actions$.pipe(
+  createProductFail$ = this.actions$.pipe(
     ofType<CreateProductFail>(EProductActions.CreateProductFail),
     tap(() => {
       // TODO: show modal dialog for this case (Effect without `dispatch: false`)
@@ -66,11 +66,11 @@ export class ProductsEffects {
   );
 
   @Effect()
-  deleteProduct$ = this._actions$.pipe(
+  deleteProduct$ = this.actions$.pipe(
     ofType<DeleteProductAction>(EProductActions.DeleteProduct),
     map(action => action.payload),
     switchMap((id: string) => {
-      return this._productsService
+      return this.productsService
         .deleteProduct(id)
         .pipe(
           map(() => new DeleteProductSuccess(id)),
@@ -80,10 +80,10 @@ export class ProductsEffects {
   );
 
   @Effect()
-  getProducts$ = this._actions$.pipe(
+  getProducts$ = this.actions$.pipe(
     ofType<GetProductsAction>(EProductActions.GetProducts),
     switchMap(() => {
-      return this._productsService
+      return this.productsService
         .getProducts()
         .pipe(
           map((products: Product[]) => new GetProductsSuccess(products)),
