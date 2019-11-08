@@ -32,8 +32,11 @@ export class ProductEditComponent implements OnInit {
     });
   }
 
+  // TODO: pure logic of the component (it is not a dream)
   updateProduct(name: string, description: string, price: number) {
+    // TODO:need to use `pipe` with Observable
     this.route.params.subscribe(params => {
+      // TODO:need to use dispatch of the action
       this.productsService
         .updateProduct(params.id, name, description, price)
         .subscribe(result => {
@@ -43,15 +46,20 @@ export class ProductEditComponent implements OnInit {
     });
   }
 
+  // TODO: pure logic of the component (it is not a dream)
   ngOnInit() {
+    // TODO:need to use `pipe` with Observable
     this.route.params.subscribe(params => {
+      // TODO:need to use dispatch of the action
       this.productsService
         .editProduct(params.id)
         .subscribe((product: Product) => {
           const { name, price, description } = product;
-          this.angForm.get('Name').setValue(name);
-          this.angForm.get('Price').setValue(price);
-          this.angForm.get('Description').setValue(description);
+          this.angForm.setValue({
+            Name: name,
+            Price: price,
+            Description: description,
+          });
         });
     });
   }
