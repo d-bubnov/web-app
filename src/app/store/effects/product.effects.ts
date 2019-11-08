@@ -14,6 +14,7 @@ import {
   CreateProductSuccess,
   CreateProductFail,
 } from '../actions/products.actions';
+import { OpenModalAction } from '../actions/modal.actions';
 
 import { ProductsService } from '../../services/products.service';
 import { Product } from 'src/app/models/product';
@@ -56,12 +57,12 @@ export class ProductsEffects {
     }),
   );
 
-  @Effect({ dispatch: false })
+  @Effect()
   createProductFail$ = this.actions$.pipe(
     ofType<CreateProductFail>(EProductActions.CreateProductFail),
-    tap(() => {
-      // TODO: show modal dialog for this case (Effect without `dispatch: false`)
-      alert('Something went wrong while adding new product (see console logs)');
+    switchMap(() => {
+      const message = 'Something went wrong while adding the new product';
+      return of(new OpenModalAction(message));
     }),
   );
 
@@ -77,6 +78,15 @@ export class ProductsEffects {
           catchError(() => of (new DeleteProductFail())),
         );
     })
+  );
+
+  @Effect()
+  deleteProductFail$ = this.actions$.pipe(
+    ofType<DeleteProductFail>(EProductActions.DeleteProductFail),
+    switchMap(() => {
+      const message = 'Something went wrong while deleting of the product';
+      return of(new OpenModalAction(message));
+    }),
   );
 
   @Effect()

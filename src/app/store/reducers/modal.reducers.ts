@@ -2,12 +2,12 @@ import { EModalActions, ModalActions } from '../actions/modal.actions';
 import { initialModalState, IModalState } from '../state/modal.state';
 import { Action } from '@ngrx/store';
 
-// TODO: temporary solution for gettin `payload` property
+// TODO: temporary solution for getting the `payload` property.
 interface ExtendedActionType extends Action {
   payload?: any;
 }
 
-// TODO: I can't use `ModalActions` type here. It's not cool!
+// TODO: I can't use `ModalActions` type here.
 export function modalReducer(
   state: IModalState = initialModalState,
   action: ExtendedActionType // I want to use `ModalActions` type here!
