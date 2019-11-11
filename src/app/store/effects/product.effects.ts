@@ -11,6 +11,8 @@ import {
   DeleteProductSuccess,
   CreateProductAction,
   CreateProductSuccess,
+  CreateProductFail,
+  DeleteProductFail,
 } from '../actions/products.actions';
 import { OpenModalAction } from '../actions/modal.actions';
 
@@ -41,9 +43,9 @@ export class ProductsEffects {
             }
 
             const message = 'Something went wrong while adding the new product';
-            return of (new OpenModalAction(message));
+            return of (new CreateProductFail(message));
           }),
-          catchError((error) => of (new OpenModalAction(error))),
+          catchError((error) => of (new CreateProductFail(error))),
         );
     })
   );
@@ -53,6 +55,18 @@ export class ProductsEffects {
     ofType<CreateProductSuccess>(EProductActions.CreateProductSuccess),
     tap(() => {
       this.router.navigate(['products']);
+    }),
+  );
+
+  @Effect()
+  createProductFail$ = this.actions$.pipe(
+    ofType<CreateProductFail>(EProductActions.CreateProductFail),
+    map(action => action.payload),
+    tap(() => {
+      this.router.navigate(['products']);
+    }),
+    switchMap((message: string) => {
+      return of (new OpenModalAction(message));
     }),
   );
 
@@ -69,14 +83,26 @@ export class ProductsEffects {
               return of (new DeleteProductSuccess(id));
             }
 
-            const message = 'Something went wrong while deleting of the product';
-            return of (new OpenModalAction(message));
+            const message = `
+              Something went wrong while deleting of the product.
+              Try to reload page or contact your system administrator.
+            `;
+            return of (new DeleteProductFail(message));
           }),
           catchError((error) => {
-            return of (new OpenModalAction(error));
+            return of (new DeleteProductFail(error));
           }),
         );
     })
+  );
+
+  @Effect()
+  deleteProductFail$ = this.actions$.pipe(
+    ofType<DeleteProductFail>(EProductActions.DeleteProductFail),
+    map(action => action.payload),
+    switchMap((message: string) => {
+      return of(new OpenModalAction(message));
+    }),
   );
 
   @Effect()
