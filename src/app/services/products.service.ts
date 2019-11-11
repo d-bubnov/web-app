@@ -52,7 +52,7 @@ export class ProductsService {
           success: response.Success,
         })),
         switchMap((result) => {
-          this.logService.log('Response: ', result.message);
+          this.logService.log('Create response: ', result.message);
           return of(result.success);
         }),
         catchError(error => {
@@ -105,7 +105,7 @@ export class ProductsService {
           success: response.Success,
         })),
         switchMap((result) => {
-          this.logService.log('Response: ', result.message);
+          this.logService.log('Update response: ', result.message);
           return of(result.success);
         }),
         catchError(error => {
@@ -119,16 +119,20 @@ export class ProductsService {
    * Delete product by id
    * @param id product ID
    */
-  deleteProduct(id: string): Observable<string> {
+  deleteProduct(id: string): Observable<boolean> {
     this.logService.info(`Trying to delete the product by id='${id}'`);
 
     return this
       .httpClient
       .get<ResponseMessage<string>>(`${this.uri}/delete/${id}`)
       .pipe(
-        map(response => response.Message),
-        tap(message => {
-          this.logService.log('Response: ', message);
+        map(response => ({
+          message: response.Message,
+          success: response.Success,
+        })),
+        switchMap(result => {
+          this.logService.log('Delete response: ', result.message);
+          return of(result.success);
         }),
         catchError(error => {
           this.logService.error(error);

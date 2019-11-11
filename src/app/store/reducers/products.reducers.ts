@@ -29,7 +29,6 @@ export function productReducer(
         selectedProduct: id,
       };
     }
-    case EProductActions.DeleteProductFail:
     default: {
       return state;
     }

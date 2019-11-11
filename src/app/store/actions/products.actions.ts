@@ -39,6 +39,7 @@ export class DeleteProductSuccess implements Action {
 
 export class DeleteProductFail implements Action {
   readonly type = EProductActions.DeleteProductFail;
+  constructor(public payload: string) {}
 }
 
 export class CreateProductAction implements Action {
@@ -52,6 +53,7 @@ export class CreateProductSuccess implements Action {
 
 export class CreateProductFail implements Action {
   readonly type = EProductActions.CreateProductFail;
+  constructor(public payload: string) {}
 }
 
 export type ProductActions =

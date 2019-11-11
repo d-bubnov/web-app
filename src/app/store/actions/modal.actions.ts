@@ -8,21 +8,21 @@ export enum EModalActions {
 }
 
 export class OpenModalAction implements Action {
-  readonly type: string = EModalActions.OpenModal;
+  readonly type = EModalActions.OpenModal;
   constructor(public payload: string) {}
 }
 
 export class CloseModalAction implements Action {
-  readonly type: string = EModalActions.CloseModal;
+  readonly type = EModalActions.CloseModal;
 }
 
 export class OpenModalSuccess implements Action {
-  readonly type: string = EModalActions.OpenModalSuccess;
+  readonly type = EModalActions.OpenModalSuccess;
   constructor(public payload: string) {}
 }
 
 export class CloseModalSuccess implements Action {
-  readonly type: string = EModalActions.CloseModalSuccess;
+  readonly type = EModalActions.CloseModalSuccess;
 }
 
 export type ModalActions =

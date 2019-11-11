@@ -8,9 +8,6 @@ import {
   NavigationCancel,
   NavigationError,
 } from '@angular/router';
-import { IAppState } from './store/state/app.state';
-import { Store } from '@ngrx/store';
-import { OpenModalAction } from './store/actions/modal.actions';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +19,6 @@ export class AppComponent {
   constructor(
     private loadingBar: SlimLoadingBarService,
     private router: Router,
-    private store: Store<IAppState>,
   ) {
     this.router.events.subscribe((event: Event) => {
       this.navigationInterceptor(event);
@@ -44,7 +40,4 @@ export class AppComponent {
     }
   }
 
-  openDialog() {
-    this.store.dispatch(new OpenModalAction('It is just test string...'));
-  }
 }

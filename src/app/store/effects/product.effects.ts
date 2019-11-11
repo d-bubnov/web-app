@@ -9,11 +9,12 @@ import {
   GetProductsSuccess,
   DeleteProductAction,
   DeleteProductSuccess,
-  DeleteProductFail,
   CreateProductAction,
   CreateProductSuccess,
   CreateProductFail,
+  DeleteProductFail,
 } from '../actions/products.actions';
+import { OpenModalAction } from '../actions/modal.actions';
 
 import { ProductsService } from '../../services/products.service';
 import { Product } from 'src/app/models/product';
@@ -36,14 +37,15 @@ export class ProductsEffects {
       return this.productsService
         .createProduct(product)
         .pipe(
-          switchMap((success) => {
+          switchMap((success: boolean) => {
             if (success) {
               return of (new CreateProductSuccess());
             }
 
-            return of (new CreateProductFail());
+            const message = 'Something went wrong while adding the new product';
+            return of (new CreateProductFail(message));
           }),
-          catchError(() => of (new CreateProductFail())),
+          catchError((error) => of (new CreateProductFail(error))),
         );
     })
   );
@@ -56,12 +58,15 @@ export class ProductsEffects {
     }),
   );
 
-  @Effect({ dispatch: false })
+  @Effect()
   createProductFail$ = this.actions$.pipe(
     ofType<CreateProductFail>(EProductActions.CreateProductFail),
+    map(action => action.payload),
     tap(() => {
-      // TODO: show modal dialog for this case (Effect without `dispatch: false`)
-      alert('Something went wrong while adding new product (see console logs)');
+      this.router.navigate(['products']);
+    }),
+    switchMap((message: string) => {
+      return of (new OpenModalAction(message));
     }),
   );
 
@@ -73,10 +78,31 @@ export class ProductsEffects {
       return this.productsService
         .deleteProduct(id)
         .pipe(
-          map(() => new DeleteProductSuccess(id)),
-          catchError(() => of (new DeleteProductFail())),
+          switchMap((success: boolean) => {
+            if (success) {
+              return of (new DeleteProductSuccess(id));
+            }
+
+            const message = `
+              Something went wrong while deleting of the product.
+              Try to reload page or contact your system administrator.
+            `;
+            return of (new DeleteProductFail(message));
+          }),
+          catchError((error) => {
+            return of (new DeleteProductFail(error));
+          }),
         );
     })
+  );
+
+  @Effect()
+  deleteProductFail$ = this.actions$.pipe(
+    ofType<DeleteProductFail>(EProductActions.DeleteProductFail),
+    map(action => action.payload),
+    switchMap((message: string) => {
+      return of(new OpenModalAction(message));
+    }),
   );
 
   @Effect()
