@@ -9,10 +9,8 @@ import {
   GetProductsSuccess,
   DeleteProductAction,
   DeleteProductSuccess,
-  DeleteProductFail,
   CreateProductAction,
   CreateProductSuccess,
-  CreateProductFail,
 } from '../actions/products.actions';
 import { OpenModalAction } from '../actions/modal.actions';
 
@@ -37,14 +35,15 @@ export class ProductsEffects {
       return this.productsService
         .createProduct(product)
         .pipe(
-          switchMap((success) => {
+          switchMap((success: boolean) => {
             if (success) {
               return of (new CreateProductSuccess());
             }
 
-            return of (new CreateProductFail());
+            const message = 'Something went wrong while adding the new product';
+            return of (new OpenModalAction(message));
           }),
-          catchError(() => of (new CreateProductFail())),
+          catchError((error) => of (new OpenModalAction(error))),
         );
     })
   );
@@ -58,15 +57,6 @@ export class ProductsEffects {
   );
 
   @Effect()
-  createProductFail$ = this.actions$.pipe(
-    ofType<CreateProductFail>(EProductActions.CreateProductFail),
-    switchMap(() => {
-      const message = 'Something went wrong while adding the new product';
-      return of(new OpenModalAction(message));
-    }),
-  );
-
-  @Effect()
   deleteProduct$ = this.actions$.pipe(
     ofType<DeleteProductAction>(EProductActions.DeleteProduct),
     map(action => action.payload),
@@ -74,19 +64,19 @@ export class ProductsEffects {
       return this.productsService
         .deleteProduct(id)
         .pipe(
-          map(() => new DeleteProductSuccess(id)),
-          catchError(() => of (new DeleteProductFail())),
+          switchMap((success: boolean) => {
+            if (success) {
+              return of (new DeleteProductSuccess(id));
+            }
+
+            const message = 'Something went wrong while deleting of the product';
+            return of (new OpenModalAction(message));
+          }),
+          catchError((error) => {
+            return of (new OpenModalAction(error));
+          }),
         );
     })
-  );
-
-  @Effect()
-  deleteProductFail$ = this.actions$.pipe(
-    ofType<DeleteProductFail>(EProductActions.DeleteProductFail),
-    switchMap(() => {
-      const message = 'Something went wrong while deleting of the product';
-      return of(new OpenModalAction(message));
-    }),
   );
 
   @Effect()
