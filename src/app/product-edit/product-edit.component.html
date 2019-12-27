@@ -2,6 +2,7 @@
 <div class="card">
     <div class="card-body">
       <form [formGroup]="angForm" novalidate>
+        <input type="hidden" formControlName="Id" #Id />
         <div class="form-group">
           <label class="col-md-4">Product Name</label>
           <input
@@ -46,10 +47,15 @@
           </div>
         </div>
         <div class="form-group">
-          <button (click) = "updateProduct(Name.value, Description.value, Price.value)" type="submit" class="btn btn-primary"
-          [disabled]="angForm.invalid" >
+          <button
+            (click) = "updateProduct(Id.value, Name.value, Description.value, Price.value)"
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="angForm.invalid"
+          >
             Update Product
-          </button>
+          </button
+          >
         </div>
       </form>
     </div>

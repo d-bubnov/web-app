@@ -11,8 +11,12 @@ import {
   DeleteProductSuccess,
   CreateProductAction,
   CreateProductSuccess,
-  CreateProductFail,
+  ProductFailAction,
   DeleteProductFail,
+  GetProductAction,
+  GetProductSuccess,
+  UpdateProductAction,
+  UpdateProductSuccess,
 } from '../actions/products.actions';
 import { OpenModalAction } from '../actions/modal.actions';
 
@@ -43,9 +47,9 @@ export class ProductsEffects {
             }
 
             const message = 'Something went wrong while adding the new product';
-            return of (new CreateProductFail(message));
+            return of (new ProductFailAction(message));
           }),
-          catchError((error) => of (new CreateProductFail(error))),
+          catchError((error) => of (new ProductFailAction(error))),
         );
     })
   );
@@ -59,8 +63,8 @@ export class ProductsEffects {
   );
 
   @Effect()
-  createProductFail$ = this.actions$.pipe(
-    ofType<CreateProductFail>(EProductActions.CreateProductFail),
+  productFailAction$ = this.actions$.pipe(
+    ofType<ProductFailAction>(EProductActions.ProductFailAction),
     map(action => action.payload),
     tap(() => {
       this.router.navigate(['products']);
@@ -68,6 +72,24 @@ export class ProductsEffects {
     switchMap((message: string) => {
       return of (new OpenModalAction(message));
     }),
+  );
+
+  @Effect()
+  getProduct$ = this.actions$.pipe(
+    ofType<GetProductAction>(EProductActions.GetProduct),
+    map(action => action.payload),
+    switchMap((id: string) => {
+      return this.productsService
+      .getProduct(id)
+      .pipe(
+        switchMap((product: Product) => {
+          return of(new GetProductSuccess(product));
+        }),
+        catchError(error => {
+          return of(new OpenModalAction('Something went wrong...'));
+        })
+      );
+    })
   );
 
   @Effect()
@@ -103,6 +125,30 @@ export class ProductsEffects {
     switchMap((message: string) => {
       return of(new OpenModalAction(message));
     }),
+  );
+
+  @Effect()
+  updateProduct$ = this.actions$.pipe(
+    ofType<UpdateProductAction>(EProductActions.UpdateProduct),
+    map(action => action.payload),
+    switchMap((product: Product) => {
+      return this.productsService
+        .updateProduct(product)
+        .pipe(
+          tap(() => {
+            this.router.navigate(['products']);
+          }),
+          switchMap((success: boolean) => {
+            if (success) {
+              return of (new UpdateProductSuccess());
+            }
+
+            const message = 'Something went wrong while updating the product';
+            return of (new ProductFailAction(message));
+          }),
+          catchError((error) => of (new ProductFailAction(error))),
+        );
+    })
   );
 
   @Effect()

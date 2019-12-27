@@ -8,7 +8,7 @@ import {
   DeleteProductAction,
 } from '../store/actions/products.actions';
 
-import { selectProduct, selectProducts } from '../store/selectors/product.selectors';
+import { selectProductId, selectProducts } from '../store/selectors/product.selectors';
 import { IAppState } from '../store/state/app.state';
 import { IProduct } from '../models/product';
 
@@ -20,7 +20,7 @@ import { IProduct } from '../models/product';
 export class ProductGetComponent implements OnInit {
 
   products$: Observable<IProduct[]> = this.store.pipe(select(selectProducts));
-  selected$: Observable<string> = this.store.pipe(select(selectProduct));
+  selected$: Observable<string> = this.store.pipe(select(selectProductId));
 
   constructor(private store: Store<IAppState>) {}
 

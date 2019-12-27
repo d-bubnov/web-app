@@ -63,12 +63,12 @@ export class ProductsService {
   }
 
   /**
-   * Edit product
+   * Get product by ID
    * @param id product ID
    */
-  editProduct(id: string): Observable<Product> {
+  getProduct(id: string): Observable<Product> {
     return this.httpClient
-      .get<ResponseMessage<IProductHttp>>(`${this.uri}/edit/${id}`)
+      .get<ResponseMessage<IProductHttp>>(`${this.uri}/get/${id}`)
       .pipe(
         map(response => response.Data),
         switchMap((httpProduct: IProductHttp) => {
@@ -84,21 +84,18 @@ export class ProductsService {
 
   /**
    * Update exists product
-   * @param id product ID
-   * @param name product Name
-   * @param description product Description
-   * @param price product Price
+   * @param product product object
    */
-  updateProduct(id: string, name: string, description: string, price: number): Observable<boolean> {
+  updateProduct(product: Product): Observable<boolean> {
     const productToUpdate: IProductHttpBase = {
-      _id: id,
-      ProductName: name,
-      ProductPrice: price,
-      ProductDescription: description,
+      _id: product.id,
+      ProductName: product.name,
+      ProductPrice: product.price,
+      ProductDescription: product.description,
     };
 
     return this.httpClient
-      .post<ResponseMessage<string>>(`${this.uri}/update/${id}`, productToUpdate)
+      .post<ResponseMessage<string>>(`${this.uri}/update/${product.id}`, productToUpdate)
       .pipe(
         map(response => ({
           message: response.Message,
