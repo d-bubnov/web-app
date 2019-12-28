@@ -1,9 +1,14 @@
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProductsService } from '../services/products.service';
-import { Product } from '../models/product';
-import { LogService } from '../services/log.service';
+
+import { Product, IProduct } from '../models/product';
+import { IAppState } from '../store/state/app.state';
+import { GetProductAction, UpdateProductAction } from '../store/actions/products.actions';
+import { selectCurrentProduct } from '../store/selectors/product.selectors';
 
 @Component({
   selector: 'app-product-edit',
@@ -12,48 +17,52 @@ import { LogService } from '../services/log.service';
 })
 export class ProductEditComponent implements OnInit {
 
+  id$: Observable<string>;
+  product$: Observable<IProduct> = this.store.pipe(select(selectCurrentProduct));
   angForm: FormGroup;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private productsService: ProductsService,
-    private logService: LogService,
+    private store: Store<IAppState>
   ) {
     this.createForm();
+    this.id$ = route.params.pipe(map(p => p.id));
   }
 
   createForm() {
     this.angForm = this.formBuilder.group({
+      Id: [''],
       Name: ['', Validators.required],
       Description: ['', Validators.required],
       Price: ['', Validators.required],
     });
   }
 
-  updateProduct(name: string, description: string, price: number) {
-    this.route.params.subscribe(params => {
-      this.productsService
-        .updateProduct(params.id, name, description, price)
-        .subscribe(result => {
-          this.logService.log('Updated: ', result);
-          this.router.navigate(['products']);
-        });
-    });
+  updateProduct(id: string, name: string, description: string, price: number) {
+    const productToUpdate = new Product(id, name, description, price);
+    this.store.dispatch(new UpdateProductAction(productToUpdate));
   }
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
-      this.productsService
-        .editProduct(params.id)
-        .subscribe((product: Product) => {
-          const { name, price, description } = product;
-          this.angForm.get('Name').setValue(name);
-          this.angForm.get('Price').setValue(price);
-          this.angForm.get('Description').setValue(description);
-        });
-    });
+    this.id$
+      .subscribe((id: string) =>
+        this.store.dispatch(new GetProductAction(id))
+      );
+
+    this.product$
+      .subscribe((product: Product) => {
+        if (product) {
+          const { id, name, price, description } = product;
+          this.angForm.setValue({
+            Id: id,
+            Name: name,
+            Price: price,
+            Description: description,
+          });
+        }
+      });
   }
 
 }

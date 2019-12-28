@@ -19,14 +19,29 @@ export function productReducer(
       return {
         ...state,
         products,
-        selectedProduct: '',
+        selectedProductId: '',
+        currentProduct: null,
       };
     }
     case EProductActions.SelectProduct: {
       const id: string = action.payload;
       return {
         ...state,
-        selectedProduct: id,
+        selectedProductId: id,
+      };
+    }
+    case EProductActions.GetProductSuccess: {
+      const currentProduct = action.payload;
+      return {
+        ...state,
+        currentProduct,
+      };
+    }
+    case EProductActions.UpdateProductSuccess: {
+      return {
+        ...state,
+        currentProduct: null,
+        selectedProductId: '',
       };
     }
     default: {

@@ -2,10 +2,12 @@ import { IProduct } from '../../models/product';
 
 export interface IProductState {
     products: IProduct[];
-    selectedProduct: string;
+    selectedProductId: string;
+    currentProduct: IProduct;
 }
 
 export const initialProductState: IProductState = {
     products: [],
-    selectedProduct: '',
+    currentProduct: null,
+    selectedProductId: '',
 };

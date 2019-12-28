@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup,  FormBuilder,  Validators } from '@angular/forms';
 import { Product } from '../models/product';
 import { IAppState } from '../store/state/app.state';
@@ -10,7 +10,7 @@ import { CreateProductAction } from '../store/actions/products.actions';
   templateUrl: './product-add.component.html',
   styleUrls: ['./product-add.component.less']
 })
-export class ProductAddComponent implements OnInit {
+export class ProductAddComponent {
 
   angForm: FormGroup;
 
@@ -32,9 +32,6 @@ export class ProductAddComponent implements OnInit {
   addProduct(ProductName: string, ProductDescription: string, ProductPrice: number) {
     const productToAdd = new Product('', ProductName, ProductDescription, ProductPrice);
     this.store.dispatch(new CreateProductAction(productToAdd));
-  }
-
-  ngOnInit() {
   }
 
 }
