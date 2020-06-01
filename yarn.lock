@@ -934,6 +934,11 @@
   version "8.4.0"
   resolved "https://registry.yarnpkg.com/@ngrx/router-store/-/router-store-8.4.0.tgz#59e5295eadaabfdabe11e201de3c0405434783bc"
 
+"@ngrx/store-devtools@^9.2.0":
+  version "9.2.0"
+  resolved "https://registry.yarnpkg.com/@ngrx/store-devtools/-/store-devtools-9.2.0.tgz#298b86b0c4ea483313b67d64a68b2d3376a5a04f"
+  integrity sha512-/FvgcpjO4IvwNFnRVoHGikAvckr6fxKf4NgYoTQ9giI8xavolLvuQUHxzH20legi5dgZz34ii2m2g1Q7OxEV8w==
+
 "@ngrx/store@^8.4.0":
   version "8.4.0"
   resolved "https://registry.yarnpkg.com/@ngrx/store/-/store-8.4.0.tgz#b4ab3bf81c6ab7bc0904886aa2b40be98fae8db5"

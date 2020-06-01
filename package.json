@@ -22,6 +22,7 @@
     "@ngrx/effects": "^8.4.0",
     "@ngrx/router-store": "^8.4.0",
     "@ngrx/store": "^8.4.0",
+    "@ngrx/store-devtools": "^9.2.0",
     "bootstrap": "^4.3.1",
     "ng2-slim-loading-bar": "^4.0.0",
     "rxjs": "^6.5.3",
