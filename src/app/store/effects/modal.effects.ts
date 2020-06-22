@@ -31,7 +31,7 @@ export class ModalEffects {
       switchMap((message: string) => {
         // body overflow is hidden to hide main scrollbar when modal window is open
         this.renderer.setStyle(document.body, 'overflow', 'hidden');
-        return of( new OpenModalSuccess(message));
+        return of(new OpenModalSuccess(message));
       }),
     );
 

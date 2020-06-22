@@ -12,7 +12,10 @@ import {
 @Component({
   selector: 'app-modal-dialog',
   templateUrl: './modal-dialog.component.html',
-  styleUrls: ['./modal-dialog.component.less']
+  styleUrls: [
+    '../modal.theme.less',
+    './modal-dialog.component.less',
+  ],
 })
 export class ModalDialogComponent {
 
